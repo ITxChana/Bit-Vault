@@ -1,22 +1,39 @@
+// using express JS
 var express = require("express");
 var app = express();
-var mongodb = require("mongodb");
-var formidable = require("express-formidable");
-var httpObj = require("http");
-var mongoClient = mongodb.MongoClient;
-var ObjectId = mongodb.ObjectId;
-var http = httpObj.createServer(app);
-var bcrypt = require("bcrypt");
-var fileSystem = require("fs");
-var zipper = require('zip-local');
-var session = require("express-session");
 
 // express formidable is used to parse the form data values
+var formidable = require("express-formidable");
 app.use(formidable({
     // max upload file size 300 MB
     "maxFileSize": 300 * 1024 * 1024
 }));
 
+var jwt = require("jsonwebtoken");
+var accessTokenSecret = "1234567890AdminTokenSecret";
+
+// use mongo DB as database
+var mongodb = require("mongodb");
+var mongoClient = mongodb.MongoClient;
+
+// the unique ID for each mongo DB document
+var ObjectId = mongodb.ObjectId;
+
+// receiving http requests
+var httpObj = require("http");
+var http = httpObj.createServer(app);
+
+// to encrypt/decrypt passwords
+var bcrypt = require("bcrypt");
+
+// to store files
+var fileSystem = require("fs");
+
+// module to create ZIP files
+var zipper = require('zip-local');
+
+// to send emails
+var nodemailer = require("nodemailer");
 
 // for realtime communication
 const socketIO = require("socket.io")(http, {
@@ -26,6 +43,7 @@ const socketIO = require("socket.io")(http, {
 });
 
 // to start the session
+var session = require("express-session");
 app.use(session({
     secret: 'secret key',
     resave: false,
@@ -50,8 +68,8 @@ var mainURL = "http://localhost:4000";
 // to remove folder and all sub-directories in it
 var rimraf = require("rimraf");
 
-// setup SMTP for sending mails
-/*var nodemailerFrom = "chanakaniroshana624vish@gmail.com";
+/* setup SMTP for sending mails
+var nodemailerFrom = "chanakaniroshana624vish@gmail.com";
 var nodemailerObject = {
     service: "gmail",
     host: 'smtp.gmail.com',
@@ -61,10 +79,10 @@ var nodemailerObject = {
         user: "chanakaniroshana624vish@gmail.com",
         pass: ""
     }
-};
+};*/
 
 var requestModule = require("request");
-const functions = require("./modules/functions");*/
+const functions = require("./modules/functions");
 
 // global database object
 var database = null;
